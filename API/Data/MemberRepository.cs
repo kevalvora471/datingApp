@@ -19,7 +19,7 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
     {
         return await context.Members
             .Where(x => x.Id == memberId)
-            .SelectMany(x => x.photos)
+            .SelectMany(x => x.Photos)
             .ToListAsync();
     }
     public async Task<bool> SaveAllAsync()
