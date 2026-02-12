@@ -13,18 +13,29 @@ export class ImageUpload {
   uploadFile = output<File>();
   loading = input<boolean>(false);
 
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+  
+    if (!input.files || input.files.length === 0) return;
+  
+    const file = input.files[0];
+    this.previewImage(file);
+  }
+  
+
   onDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     this.isDragging = true;
   }
 
-  OnDragLeave(event: DragEvent) {
+  onDragLeave(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     this.isDragging = false;
   }
-  OnDrop(event: DragEvent) {
+
+  onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
     this.isDragging = false;
