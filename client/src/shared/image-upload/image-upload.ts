@@ -17,8 +17,8 @@ export class ImageUpload {
     const input = event.target as HTMLInputElement;
   
     if (!input.files || input.files.length === 0) return;
-  
     const file = input.files[0];
+    this.fileToUpload = file;  
     this.previewImage(file);
   }
   
