@@ -53,10 +53,13 @@
 
     </div>
 
-    <div class="flex flex-col mockup-code text-lg">
-        <div>creds value: {{credentialsForm.value | json}}</div>
-        <div>creds status: {{credentialsForm.status | json}}</div>
-        <div>profile value: {{profileForm.value | json}}</div>
-        <div>profile status: {{profileForm.status | json}}</div>
+    @if(validationErrors().length > 0) {
+    <div class="mt-5 flex bg-gray-200 rounded-2xl w-1/2 p-3 mx-auto">
+        <ul class="flex flex-col text-error scale-y-1">
+            @for (error of validationErrors(); track $index) {
+            <li>{{error}}</li>
+            }
+        </ul>
     </div>
+    }
 </div>
