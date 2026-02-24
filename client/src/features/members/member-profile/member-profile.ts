@@ -65,5 +65,5 @@ export class MemberProfile implements OnInit, OnDestroy {
     if (this.memberService.editMode()) {
       this.memberService.editMode.set(false);
     }
-  }
+  } 
 }

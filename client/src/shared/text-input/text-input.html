@@ -1,6 +1,7 @@
 <label class="floating-label">
     <span>{{label()}}</span>
-    <input class="input w-full" [type]="type()" [max]="maxDate()" [class.input-error]="control.invalid && control.touched"
+    <input class="input w-full" [type]="type()" [max]="maxDate()"
+        [class.input-error]="control.invalid && control.touched"
         [class.input-success]="control.valid && control.touched" [formControl]="control" placeholder="{{label()}}">
     @if(control.hasError('required') && control.touched) {
     <div class="validation-hint text-error text-xs text-start">{{label()}} is required.</div>
@@ -18,12 +19,16 @@
         {{label()}} must be at most {{control.errors?.['maxlength'].requiredLength}} characters
     </div>
     }
-    @if(control.parent?.hasError('passwordMismatch')
-    && control.parent?.get('confirmPassword')?.touched) {
+    @if(
+    control.parent?.hasError('passwordMismatch') &&
+    control.touched &&
+    control.parent?.get('confirmPassword') === control
+    ) {
     <div class="validation-hint text-error text-xs text-start">
         Passwords do not match
     </div>
     }
+
 
 
 </label>

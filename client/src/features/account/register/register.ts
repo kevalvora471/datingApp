@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule , TextInput],
+  imports: [ReactiveFormsModule, TextInput],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -27,9 +27,15 @@ export class Register {
   constructor() {
     this.credentialsForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      displayName: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]],
-      confirmPassword: ['', [Validators.required, this.matchValues('password')]]
+      displayName: ['', Validators.required],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(4),
+        Validators.maxLength(8)
+      ]],
+      confirmPassword: ['', Validators.required]
+    }, {
+      validators: this.passwordMatchValidator
     });
 
     this.profileForm = this.fb.group({
@@ -44,15 +50,14 @@ export class Register {
       this.credentialsForm.controls['confirmPassword'].updateValueAndValidity();
     })
   }
+  passwordMatchValidator(form: AbstractControl): ValidationErrors | null {
 
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
 
-  matchValues(matchTo: string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const parent = control.parent;
-      if (!parent) return null;
-      const matchValue = parent.get(matchTo)?.value;
-      return control.value === matchValue ? null : { passwordMisMatch: true }
-    }
+    return password === confirmPassword
+      ? null
+      : { passwordMismatch: true };
   }
 
   nextStep() {
@@ -72,7 +77,6 @@ export class Register {
   }
 
   register() {
-
     if (this.profileForm.valid && this.credentialsForm.valid) {
       const formData = { ...this.credentialsForm.value, ...this.profileForm.value };
 
@@ -82,11 +86,10 @@ export class Register {
         },
         error: err => {
           console.log(err);
-          this.validationErrors.set(err); 
+          this.validationErrors.set(err);
         }
       })
     }
-
   }
 
   cancel() {
