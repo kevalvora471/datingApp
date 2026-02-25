@@ -1,17 +1,17 @@
-import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { InitService } from '../core/services/init-service';
 import { lastValueFrom } from 'rxjs';
-import { errorInterceptor } from '../core/interceptor/error-interceptor';
-import { jwtInterceptor } from '../core/interceptor/jwt-interceptor';
-import { loadingInterceptor } from '../core/interceptor/loading-interceptor';
+import { errorInterceptor } from '../core/interceptor/error-interceptor.js';
+import { jwtInterceptor } from '../core/interceptor/jwt-interceptor.js';
+import { loadingInterceptor } from '../core/interceptor/loading-interceptor.js';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideRouter(routes, withViewTransitions()),
     provideHttpClient(withInterceptors([errorInterceptor, jwtInterceptor, loadingInterceptor])),
     provideAppInitializer(async () => {
@@ -20,13 +20,13 @@ export const appConfig: ApplicationConfig = {
       return new Promise<void>((resolve) => {
         setTimeout(async () => {
           try {
-            await lastValueFrom(initService.init())
+            await lastValueFrom(initService.init());
           } finally {
             const splash = document.getElementById('initial-splash');
             if (splash) {
               splash.remove();
             }
-            resolve();
+            resolve()
           }
         }, 500)
       })

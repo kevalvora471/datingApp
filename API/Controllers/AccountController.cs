@@ -19,8 +19,7 @@ namespace API.Controllers
 
     public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService) : ControllerBase
     {
-        [HttpPost("register")]    //  api/account/register
-
+        [HttpPost("register")] // api/account/register
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             var user = new AppUser
@@ -46,6 +45,7 @@ namespace API.Controllers
                 {
                     ModelState.AddModelError("identity", error.Description);
                 }
+
                 return ValidationProblem();
             }
 
@@ -56,8 +56,7 @@ namespace API.Controllers
             return await user.ToDto(tokenService);
         }
 
-
-        [HttpPost("login")]     //  api/account/login
+        [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await userManager.FindByEmailAsync(loginDto.Email);
@@ -66,13 +65,12 @@ namespace API.Controllers
 
             var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
 
-            if (!result) return Unauthorized("Invalid Password");
+            if (!result) return Unauthorized("Invalid password");
 
             await SetRefreshTokenCookie(user);
 
             return await user.ToDto(tokenService);
         }
-
 
         [HttpPost("refresh-token")]
         public async Task<ActionResult<UserDto>> RefreshToken()
@@ -80,14 +78,17 @@ namespace API.Controllers
             var refreshToken = Request.Cookies["refreshToken"];
             if (refreshToken == null) return NoContent();
 
-            var user = await userManager.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken && x.RefreshTokenExpiry > DateTime.UtcNow);
+            var user = await userManager.Users
+                .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken
+                    && x.RefreshTokenExpiry > DateTime.UtcNow);
 
-            if(user == null) return Unauthorized();
+            if (user == null) return Unauthorized();
 
             await SetRefreshTokenCookie(user);
 
             return await user.ToDto(tokenService);
         }
+
         private async Task SetRefreshTokenCookie(AppUser user)
         {
             var refreshToken = tokenService.GenerateRefreshToken();
@@ -99,7 +100,7 @@ namespace API.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
 

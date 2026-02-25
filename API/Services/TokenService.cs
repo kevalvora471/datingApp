@@ -1,6 +1,4 @@
-using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,9 +15,7 @@ public class TokenService(IConfiguration config, UserManager<AppUser> userManage
     {
         var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot get token key");
         if (tokenKey.Length < 64)
-        {
-            throw new Exception("Your token key needs to be >= 64 characters.");
-        }
+            throw new Exception("Your token key needs to be >= 64 characters");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
         var claims = new List<Claim>

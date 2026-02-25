@@ -2,10 +2,9 @@ import { Directive, inject, Input, OnInit, TemplateRef, ViewContainerRef } from 
 import { AccountService } from '../../core/services/account-service';
 
 @Directive({
-  selector: '[appHasRole]',
+  selector: '[appHasRole]'
 })
 export class HasRole implements OnInit {
-
   @Input() appHasRole: string[] = [];
   private accountService = inject(AccountService);
   private viewContainerRef = inject(ViewContainerRef);
@@ -15,7 +14,7 @@ export class HasRole implements OnInit {
     if (this.accountService.currentUser()?.roles?.some(r => this.appHasRole.includes(r))) {
       this.viewContainerRef.createEmbeddedView(this.templateRef);
     } else {
-      this.viewContainerRef.clear();  
+      this.viewContainerRef.clear();
     }
   }
 }
